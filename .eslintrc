@@ -1,0 +1,28 @@
+{
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    }
+  },
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "commonjs": true,
+    "amd": true,
+    "mocha": true,
+    "es6": true
+  },
+  "globals": {
+    "Raven": true,
+    "logger": true
+  },
+  "rules": {
+    "indent": ["warn", 2]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "socket-proxy",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=6.1.0"
+  },
+  "description": "a socket proxy for node",
+  "main": "dist/socket-proxy.es5.js",
+  "files": [
+    "dist",
+    "lib",
+    "README.md"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-eslint": "^6.0.5",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.2.2",
+    "babel-preset-react": "^6.23.0",
+    "eslint": "^3.19.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
+    "nodemon": "^1.9.2"
+  },
+  "scripts": {
+    "prepublish": "npm run build && NODE_ENV=production npm run mocha",
+    "build": "node_modules/.bin/babel lib -d dist",
+    "test": "node_modules/.bin/nodemon --exec npm run mocha",
+    "mocha": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha",
+    "debug-test": "npm run mocha -- debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenshin/socket-proxy.git"
+  },
+  "keywords": [
+    "promise",
+    "all"
+  ],
+  "author": "Yuanwen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wenshin/socket-proxy/issues"
+  },
+  "homepage": "https://github.com/wenshin/socket-proxy#readme"
+}
