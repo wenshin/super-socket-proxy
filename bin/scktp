@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const net = require('net');
+const program = require('commander');
+const SocketProxy = require('../lib');
+const pkg = require('../package.json');
+
+program
+  .version(pkg.version)
+  .usage('[options] [host:port]')
+  .option('-s, --server', 'run as a proxy server')
+  .option('-t, --target [host:port]', 'the target service address like 10.1.1.10:8000')
+  .option('-p, --proxy  [host:port]', 'give one proxy service like 10.1.1.1:8887')
+  .option('-c, --config [json]', 'a json file for client server')
+  .parse(process.argv);
+
+// scktp '127.0.0.1:8887'
+const lastArg = program.args[0];
+
+const DEFAULT_SERVER_PORT = 8887;
+const DEFAULT_CLIENT_PORT = 8888;
+
+const config = {};
+
+const [localHost, localPort] = parseService(lastArg);
+
+config.host = localHost || '127.0.0.1';
+
+if (program.server) {
+  config.port = localPort || DEFAULT_SERVER_PORT;
+} else {
+  config.port = localPort || DEFAULT_CLIENT_PORT;
+}
+
+if (program.config) {
+  let configJSON = fs.readFileSync(program.config, 'utf-8');
+  configJSON = configJSON.replace(/\/\/.*(\r?\n)+/g, '');
+  configJSON = configJSON.replace(/\/\*(.+\n?)*\*\//gm, '');
+  Object.assign(config, JSON.parse(configJSON));
+}
+
+if (program.proxy) {
+  const [proxyHost, proxyPort] = parseService(program.proxy);
+  config.proxyHost = proxyHost;
+  config.proxyPort = proxyPort || DEFAULT_SERVER_PORT;
+}
+
+if (program.target) {
+  const [targetHost, targetPort] = parseService(program.target);
+  config.proxies = [{host: targetHost, port: targetPort, localPort: config.port}];
+}
+
+if (program.server) {
+  const server = SocketProxy.createServer();
+  server.on('error', (err) => {
+    console.log(err);
+  });
+  server.listen(config.port, () => {
+    console.log('[SocketProxy]run proxy server at port ', config.port);
+  });
+} else {
+  config.proxies && config.proxies.map(proxy => {
+    const options = {
+      host: config.host,
+      port: proxy.localPort,
+      targetName: proxy.name,
+      targetHost: proxy.host,
+      targetPort: proxy.port,
+      proxyHost: config.proxyHost,
+      proxyPort: config.proxyPort
+    };
+    return SocketProxy.createClientServer(options);
+  });
+}
+
+function parseService(service) {
+  return service ? service.split(':') : [];
+}
