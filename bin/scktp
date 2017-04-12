@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const net = require('net');
 const program = require('commander');
 const SocketProxy = require('../lib');
 const pkg = require('../package.json');
@@ -10,6 +9,8 @@ program
   .version(pkg.version)
   .usage('[options] [host:port]')
   .option('-s, --server', 'run as a proxy server')
+  .option('-o, --host   [host]', 'local server host, default is localhost')
+  .option('-r, --port   [port]', 'local server port')
   .option('-t, --target [host:port]', 'the target service address like 10.1.1.10:8000')
   .option('-p, --proxy  [host:port]', 'give one proxy service like 10.1.1.1:8887')
   .option('-c, --config [json]', 'a json file for client server')
@@ -23,15 +24,10 @@ const DEFAULT_CLIENT_PORT = 8888;
 
 const config = {};
 
-const [localHost, localPort] = parseService(lastArg);
+const [localHost, localPort] = getLocalHostPort(program, lastArg);
 
-config.host = localHost || '127.0.0.1';
-
-if (program.server) {
-  config.port = localPort || DEFAULT_SERVER_PORT;
-} else {
-  config.port = localPort || DEFAULT_CLIENT_PORT;
-}
+config.host = localHost;
+config.port = localPort;
 
 if (program.config) {
   let configJSON = fs.readFileSync(program.config, 'utf-8');
@@ -41,13 +37,13 @@ if (program.config) {
 }
 
 if (program.proxy) {
-  const [proxyHost, proxyPort] = parseService(program.proxy);
+  const [proxyHost, proxyPort] = parseHostPort(program.proxy);
   config.proxyHost = proxyHost;
   config.proxyPort = proxyPort || DEFAULT_SERVER_PORT;
 }
 
 if (program.target) {
-  const [targetHost, targetPort] = parseService(program.target);
+  const [targetHost, targetPort] = parseHostPort(program.target);
   config.proxies = [{host: targetHost, port: targetPort, localPort: config.port}];
 }
 
@@ -74,6 +70,18 @@ if (program.server) {
   });
 }
 
-function parseService(service) {
-  return service ? service.split(':') : [];
+function getLocalHostPort(args, lastArg) {
+  let [host, port] = parseHostPort(lastArg);
+  if (args.host) host = args.host;
+  if (args.port) port = args.port;
+  if (args.server) {
+    port = port || DEFAULT_SERVER_PORT;
+  } else {
+    port = port || DEFAULT_CLIENT_PORT;
+  }
+  return [host, port];
+}
+
+function parseHostPort(hostPort) {
+  return hostPort ? hostPort.split(':') : [];
 }

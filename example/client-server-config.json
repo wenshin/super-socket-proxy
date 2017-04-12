@@ -1,18 +1,21 @@
 // this config is same as ./bin/scktp --target 127.0.0.1:8881 --proxy 127.0.0.1:8887 127.0.0.1:8882
 {
-  // localServer host
-  "host": "127.0.0.1",
+  // localServer host, default is localhost
+  // "host": "127.0.0.1",
+
   // localServer port,
-  // if run proxy client server,
-  // it will be override by proxy.localPort
-  "port": 8882,
+  // if define `proxies`, this config will been overrided by `proxy.localPort`
+  // "port": 8882,
+
   // default is 127.0.0.1
   "proxyHost": "127.0.0.1",
+
   // default is 8887
   "proxyPort": 8887,
-  // when run proxy client server
+
+  // target server map to local port
   "proxies": [{
-    "name": "Test Server",
+    "name": "TargetService",
     "host": "127.0.0.1",
     "port": 8881,
     // override root.port

@@ -9,5 +9,5 @@ const client = net.connect({
 });
 
 client.on('data', (data) => {
-  console.log('received ', data.toString());
+  console.log('received: \n', data.toString());
 });
