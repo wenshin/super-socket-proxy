@@ -53,7 +53,7 @@ if (program.server) {
     console.log(err);
   });
   server.listen(config.port, () => {
-    console.log('[SocketProxy]run proxy server at port ', config.port);
+    console.log('[SocketProxy]run proxy server at port', config.port);
   });
 } else {
   config.proxies && config.proxies.map(proxy => {

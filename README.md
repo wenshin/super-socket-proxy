@@ -2,16 +2,17 @@
 
 a socket proxy server and client for node.
 
-## feature
+## Install
+First [Install NodeJS](https://nodejs.org/en/download/).
+then run `npm i --save super-socket-proxy` install locally,
+run `npm i -g super-socket-proxy` install globally.
 
-# Install
-
-    npm i --save super-socket-proxy
-    npm i -g super-socket-proxy
-
-# CLI Usage
+## CLI Usage
+below example must install NodeJS globally.
 
 ```
+> scktp -h
+
 Usage: scktp [options] [host:port]
 
 Options:
@@ -24,11 +25,25 @@ Options:
     -t, --target [host:port]  the target service address like 10.1.1.10:8000
     -p, --proxy  [host:port]  give one proxy service like 10.1.1.1:8887
     -c, --config [json]       a json file for client server
+> scktp -s
+[SocketProxy]run proxy server at port 8887
+> scktp -s --port 8888
+[SocketProxy]run proxy server at port 8888
+> scktp --port 8999 --target 127.0.0.1:8000 --proxy 127.0.0.1:8887
+[SocketProxy]proxy server 127.0.0.1:8887
+[SocketProxy]forward localhost:8999 to target server 127.0.0.1:8000
+> scktp -c client.json
+[SocketProxy]proxy server 127.0.0.1:8887
+[SocketProxy]forward localhost:8999 to target server 127.0.0.1:8000
 ```
 
-# NODE Usage
+### client config
 
-## SocketProxy.createServer(options)
+when run a proxy client server, you can use a json file to define complex proxy services. example see [example/client-server-config.json](https://github.com/wenshin/super-socket-proxy/blob/master/example/client-server-config.json)
+
+## NODE Usage
+
+### SocketProxy.createServer(options)
 create a server side proxy server.
 
 * `options`: [Object], An object which is optional.
@@ -36,6 +51,29 @@ create a server side proxy server.
 * `options.port`: [Number], Port the server run.
 * `@return`: [Socket]
 
+### SocketProxy.createClientServer(options)
+create a client side server to connect to proxy server.
+
+* `options`: [Object]
+* `options.host`: [String], Host the server will run with, default is localhost.
+* `options.port`: [Number], Port the server run.
+* `options.targetHost`: [String], Host of the server you want access.
+* `options.targetPort`: [Number], Port of the server you want access.
+* `options.proxyHost`: [String], Host of the proxy server.
+* `options.proxyPort`: [Number], Port of the proxy server.
+* `@return`: [Socket]
+
+### SocketProxy.connect(options)
+create a server side proxy server.
+
+* `options`: [Object], An object which is optional.
+* `options.host`: [String], Host of the server you want access.
+* `options.port`: [Number], Port of the server you want access.
+* `options.proxyHost`: [String], Host of the proxy server.
+* `options.proxyPort`: [Number], Port of the proxy server.
+* `@return`: [Socket]
+
+### examples
 ```javascript
 // proxy server
 const SocketProxy = require('super-socket-proxy');
