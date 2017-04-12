@@ -1,12 +1,17 @@
 {
-  "name": "socket-proxy",
+  "name": "super-socket-proxy",
   "version": "0.1.0",
+  "bin": {
+    "scktp": "./bin/scktp"
+  },
   "engines": {
     "node": ">=6.1.0"
   },
   "description": "a socket proxy for node",
-  "main": "dist/socket-proxy.es5.js",
+  "main": "dist/index.js",
   "files": [
+    "bin",
+    "example",
     "dist",
     "lib",
     "README.md"
@@ -14,7 +19,9 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^2.9.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-eslint": "^6.0.5",
@@ -40,8 +47,8 @@
     "url": "git+https://github.com/wenshin/socket-proxy.git"
   },
   "keywords": [
-    "promise",
-    "all"
+    "socket",
+    "proxy"
   ],
   "author": "Yuanwen",
   "license": "MIT",
